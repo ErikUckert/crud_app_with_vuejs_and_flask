@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="min-h-screen w-screen bg-gray-200 flex items-center justify-center">
     <router-view/>
   </div>
 </template>
@@ -25,4 +25,9 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+
+.moving-card {
+    @apply opacity-50 bg-gray-100 border border-blue-500;
+}
+
 </style>

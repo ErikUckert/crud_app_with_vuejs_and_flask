@@ -12,6 +12,7 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+# bootstrap some data to display
 BOOKS = [
     {
         'title': 'On the Road',
@@ -36,6 +37,7 @@ BOOKS = [
 def ping_pong():
     return jsonify('pong!')
 
+# main route
 @app.route('/books', methods=['GET'])
 def all_books():
     return jsonify({
