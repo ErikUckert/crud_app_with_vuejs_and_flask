@@ -54,7 +54,7 @@ def ping_pong():
     return jsonify('pong!')
 
 # main route
-@app.route('/books', methods=['GET'])
+@app.route('/tasks', methods=['GET'])
 def all_tasks():
     return jsonify({
         'status': 'success',

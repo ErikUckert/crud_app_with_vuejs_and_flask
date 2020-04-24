@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     getTasks() {
-      const path = 'http://localhost:5000/books';
+      const path = 'http://localhost:5000/tasks';
       axios.get(path)
         .then((res) => {
           this.inbox = res.data.inbox;

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Books from '../components/Books.vue';
+import Tasks from '../components/Tasks.vue';
 import Ping from '../components/Ping.vue';
 
 Vue.use(VueRouter);
@@ -8,8 +8,8 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/',
-    name: 'Books',
-    component: Books,
+    name: 'Tasks',
+    component: Tasks,
   },
   {
     path: '/ping',
