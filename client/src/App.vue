@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="min-h-screen w-screen bg-gray-200 flex items-center justify-center">
+  <div>
     <router-view/>
   </div>
 </template>
@@ -28,6 +28,10 @@
 
 .moving-card {
     @apply opacity-50 bg-gray-100 border border-blue-500;
+}
+
+.header {
+  color: aqua;
 }
 
 </style>

@@ -13,24 +13,40 @@ app.config.from_object(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 # bootstrap some data to display
-BOOKS = [
+INBOX = [
     {
-        'title': 'On the Road',
-        'author': 'Jack Kerouac',
-        'read': True
+        'id': 0,
+        'title': 'Task 0',
+        'assignee': 'Jack Kerouac',
+        'done': False,
+        'time': 0
     },
     {
-        'title': 'Harry Potter and the Philosopher\'s Stone',
-        'author': 'J. K. Rowling',
-        'read': False
+        'id': 1,
+        'title': 'Task 1',
+        'assignee': 'Max Power',
+        'done': False,
+        'time': 0
     },
     {
-        'title': 'Green Eggs and Ham',
-        'author': 'Dr. Seuss',
-        'read': True
+        'id': 2,
+        'title': 'Task 2',
+        'assignee': 'Jonny Cool',
+        'done': True,
+        'time': 0
+    },
+    {
+        'id': 3,
+        'title': 'Task 3',
+        'assignee': 'Lucy Cat',
+        'done': True,
+        'time': 0
     }
 ]
 
+INPROGRESS = []
+
+DONE = []
 
 # sanity check route
 @app.route('/ping', methods=['GET'])
@@ -39,10 +55,12 @@ def ping_pong():
 
 # main route
 @app.route('/books', methods=['GET'])
-def all_books():
+def all_tasks():
     return jsonify({
         'status': 'success',
-        'books': BOOKS,
+        'inbox': INBOX,
+        'inprogress': INPROGRESS,
+        'done': DONE,
         'msg': 'Hello Vuety!'
     })
 
