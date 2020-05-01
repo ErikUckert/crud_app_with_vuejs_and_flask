@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 
@@ -61,8 +61,24 @@ def all_tasks():
         'inbox': INBOX,
         'inprogress': INPROGRESS,
         'done': DONE,
-        'msg': 'Hello Vuety!'
+        'msg': 'Task added!'
     })
+
+# post route
+@app.route('/tasks', methods=['GET', 'POST'])
+def all_books():
+    response_object = {'status': 'success'}
+    if request.method == 'POST':
+        post_data = request.get_json()
+        INBOX.append({
+            'title': post_data.get('title'),
+            'assignee': post_data.get('assignee'),
+            'done': post_data.get('done')
+        })
+        response_object['message'] = 'Book added!'
+    else:
+        response_object['inbox'] = INBOX
+    return jsonify(response_object)
 
 
 if __name__ == '__main__':
