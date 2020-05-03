@@ -53,20 +53,20 @@ DONE = []
 def ping_pong():
     return jsonify('pong!')
 
-# main route
-@app.route('/tasks', methods=['GET'])
-def all_tasks():
-    return jsonify({
-        'status': 'success',
-        'inbox': INBOX,
-        'inprogress': INPROGRESS,
-        'done': DONE,
-        'msg': 'Task added!'
-    })
+# # main route
+# @app.route('/tasks', methods=['GET'])
+# def main_route():
+#     return jsonify({
+#         'status': 'success',
+#         'inbox': INBOX,
+#         'inprogress': INPROGRESS,
+#         'done': DONE,
+#         'msg': 'Task added!'
+#     })
 
-# post route
+# get / post route
 @app.route('/tasks', methods=['GET', 'POST'])
-def all_books():
+def all_tasks():
     response_object = {'status': 'success'}
     if request.method == 'POST':
         post_data = request.get_json()
@@ -75,9 +75,11 @@ def all_books():
             'assignee': post_data.get('assignee'),
             'done': post_data.get('done')
         })
-        response_object['message'] = 'Book added!'
+        response_object['msg'] = 'Task added!'
+        
     else:
         response_object['inbox'] = INBOX
+        response_object['inprogress'] = INPROGRESS
     return jsonify(response_object)
 
 

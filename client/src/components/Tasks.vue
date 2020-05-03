@@ -1,6 +1,6 @@
 <template>
 <div class="content-container">
-  <alert :message="msg" v-if="showMessage"></alert>
+  <alert :msg="msg" v-if="showMessage"></alert>
   <button type="button" class="btn btn-success btn-sm" v-b-modal.task-modal>Add Task</button>
 <div id="app"
     class="min-h-screen w-screen bg-gray-200 flex flex-col pt-20 \n
@@ -111,7 +111,7 @@ export default {
       inbox: [],
       inprogress: [],
       done: [],
-      msg: {},
+      msg: '',
       showMessage: false,
       addTaskForm: {
         title: '',
@@ -128,23 +128,23 @@ export default {
           this.inbox = res.data.inbox;
           this.inprogress = res.data.inprogress;
           this.done = res.data.done;
-          this.msg = res.data.msg;
+          // this.msg = res.data.msg;
+          // this.msg = 'Message';
         })
         .catch((error) => {
-          // eslint-disable-next-line
           console.error(error);
         });
     },
     addTask(payload) {
       const path = 'http://localhost:5000/tasks';
       axios.post(path, payload)
-        .then(() => {
+        .then((res) => {
           this.getTasks();
+          // this.msg = 'Message';
           this.showMessage = true;
-          this.msg = 'Task added!';
+          this.msg = res.data.msg;
         })
         .catch((error) => {
-          // eslint-disable-next-line
           console.log(error);
           this.getTasks();
         });
