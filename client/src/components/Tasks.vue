@@ -10,14 +10,22 @@
       <draggable
         group="all-tasks"
         ghost-class="moving-card"
-        :list="inbox"
+        :list="INBOX"
         :animation="200">
-        <div v-for="task in inbox"
+        <div v-for="task in INBOX"
         :key="task.id"
       class="p-4 mb-3 flex justify-between items-center bg-white shadow rounded-lg cursor-move">
     {{task.assignee}}
     <br>
     {{task.title}}
+    <br>
+    <button
+        type="button"
+        class="btn btn-warning btn-sm"
+        v-b-modal.task-update-modal
+        @click="editTask(task)">
+      Update
+    </button>
     </div>
       </draggable>
     </div>
@@ -27,9 +35,9 @@
       <draggable
         group="all-tasks"
         ghost-class="moving-card"
-        :list="inprogress"
+        :list="INPROGRESS"
         :animation="200">
-        <div v-for="task in inprogress"
+        <div v-for="task in INPROGRESS"
         :key="task.id"
       class="p-4 mb-3 flex justify-between items-center bg-white shadow rounded-lg cursor-move">
     {{task.assignee}}
@@ -44,9 +52,9 @@
       <draggable
         group="all-tasks"
         ghost-class="moving-card"
-        :list="done"
+        :list="DONE"
         :animation="200">
-        <div v-for="task in done"
+        <div v-for="task in DONE"
         :key="task.id"
       class="p-4 mb-3 flex justify-between items-center bg-white shadow rounded-lg cursor-move">
     {{task.assignee}}
@@ -55,6 +63,7 @@
     </div>
       </draggable>
     </div>
+
     <b-modal ref="addTaskModal"
             id="task-modal"
             title="Add a new task"
@@ -81,14 +90,49 @@
             </b-form-input>
           </b-form-group>
         <b-form-group id="form-done-group">
-          <b-form-checkbox-group v-model="addTaskForm.done" id="form-checks">
-            <b-form-checkbox value="true">Done?</b-form-checkbox>
-          </b-form-checkbox-group>
+            <b-form-checkbox v-model="addTaskForm.done"
+                            id="form-checks" value=true>Done?</b-form-checkbox>
         </b-form-group>
         <b-button type="submit" variant="primary">Submit</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
     </b-modal>
+
+    <b-modal ref="editTaskModal"
+            id="task-update-modal"
+            title="Update"
+            hide-footer>
+    <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
+    <b-form-group id="form-title-edit-group"
+                  label="Title:"
+                  label-for="form-title-edit-input">
+        <b-form-input id="form-title-edit-input"
+                      type="text"
+                      v-model="editForm.title"
+                      required
+                      placeholder="Enter title">
+        </b-form-input>
+      </b-form-group>
+      <b-form-group id="form-assignee-edit-group"
+                    label="Assignee:"
+                    label-for="form-author-edit-input">
+          <b-form-input id="form-assignee-edit-input"
+                        type="text"
+                        v-model="editForm.assignee"
+                        required
+                        placeholder="Enter assignee">
+          </b-form-input>
+        </b-form-group>
+      <b-form-group id="form-done-edit-group">
+          <b-form-checkbox v-model="editForm.done" id="form-checks"
+                          value=true>Done?</b-form-checkbox>
+      </b-form-group>
+      <b-button-group>
+        <b-button type="submit" variant="primary">Update</b-button>
+        <b-button type="reset" variant="danger">Cancel</b-button>
+      </b-button-group>
+    </b-form>
+  </b-modal>
 
   </div>
   </div>
@@ -108,15 +152,21 @@ export default {
   },
   data() {
     return {
-      inbox: [],
-      inprogress: [],
-      done: [],
+      INBOX: [],
+      INPROGRESS: [],
+      DONE: [],
       msg: '',
       showMessage: false,
       addTaskForm: {
         title: '',
         assignee: '',
-        done: [],
+        done: false,
+      },
+      editForm: {
+        id: '',
+        title: '',
+        assignee: '',
+        done: false,
       },
     };
   },
@@ -125,13 +175,14 @@ export default {
       const path = 'http://localhost:5000/tasks';
       axios.get(path)
         .then((res) => {
-          this.inbox = res.data.inbox;
-          this.inprogress = res.data.inprogress;
-          this.done = res.data.done;
+          this.INBOX = res.data.INBOX;
+          this.INPROGRESS = res.data.INPROGRESS;
+          this.DONE = res.data.DONE;
           // this.msg = res.data.msg;
           // this.msg = 'Message';
         })
         .catch((error) => {
+          // eslint-disable-next-line
           console.error(error);
         });
     },
@@ -145,6 +196,7 @@ export default {
           this.msg = res.data.msg;
         })
         .catch((error) => {
+          // eslint-disable-next-line
           console.log(error);
           this.getTasks();
         });
@@ -152,13 +204,17 @@ export default {
     initForm() {
       this.addTaskForm.title = '';
       this.addTaskForm.assignee = '';
-      this.addTaskForm.done = [];
+      this.addTaskForm.done = false;
+      this.editForm.id = '';
+      this.editForm.title = '';
+      this.editForm.assignee = '';
+      this.editForm.done = false;
     },
     onSubmit(evt) {
       evt.preventDefault();
       this.$refs.addTaskModal.hide();
       let done = false;
-      if (this.addTaskForm.done[0]) done = true;
+      if (this.addTaskForm.done) done = true;
       const payload = {
         title: this.addTaskForm.title,
         assignee: this.addTaskForm.assignee,
@@ -171,6 +227,41 @@ export default {
       evt.preventDefault();
       this.$refs.addTaskModal.hide();
       this.initForm();
+    },
+    editTask(task) {
+      this.editForm = task;
+    },
+    onSubmitUpdate(evt) {
+      evt.preventDefault();
+      this.$refs.editTaskModal.hide();
+      let done = false;
+      if (this.editForm.done) done = true;
+      const payload = {
+        title: this.editForm.title,
+        assignee: this.editForm.assignee,
+        done,
+      };
+      this.updateTask(payload, this.editForm.id);
+    },
+    updateTask(payload, taskID) {
+      const path = `http://localhost:5000/tasks/${taskID}`;
+      axios.put(path, payload)
+        .then(() => {
+          this.getTasks();
+          this.showMessage = true;
+          this.msg = 'Task updated!';
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+          this.getTasks();
+        });
+    },
+    onResetUpdate(evt) {
+      evt.preventDefault();
+      this.$refs.editTaskModal.hide();
+      this.initForm();
+      this.getTasks();
     },
   },
   created() {
