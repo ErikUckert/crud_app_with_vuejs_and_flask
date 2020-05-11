@@ -5,6 +5,8 @@
 <div id="app"
     class="min-h-screen w-screen bg-gray-200 flex flex-col pt-20 \n
     justify-center items-center md:items-start md:flex-row">
+
+    <!-- three column kanban board -->
     <div class="w-full max-w-md text-center px-3">
       <p class="mb-2 text-gray-700 font-semibold font-sans tracking-wide">Inbox</p>
       <draggable
@@ -19,6 +21,7 @@
     <br>
     {{task.title}}
     <br>
+    <p>{{task.time_spend}} hours until now</p>
     <button
         type="button"
         class="btn btn-warning btn-sm"
@@ -63,7 +66,7 @@
     </div>
       </draggable>
     </div>
-
+    <!-- three column kanban board-->
     <b-modal ref="addTaskModal"
             id="task-modal"
             title="Add a new task"
@@ -93,6 +96,16 @@
             <b-form-checkbox v-model="addTaskForm.done"
                             id="form-checks" value=true>Done?</b-form-checkbox>
         </b-form-group>
+        <b-form-group id="form-time_spend-group"
+                      label="Time spend:"
+                      label-for="form-time_spend-input">
+            <b-form-input id="form-time_spend-input"
+                          type="text"
+                          v-model="addTaskForm.time_spend"
+                          required
+                          placeholder="How long does this take?">
+            </b-form-input>
+          </b-form-group>
         <b-button type="submit" variant="primary">Submit</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
@@ -127,6 +140,16 @@
           <b-form-checkbox v-model="editForm.done" id="form-checks"
                           value=true>Done?</b-form-checkbox>
       </b-form-group>
+      <b-form-group id="form-time_spend-group"
+                    label="Time spend:"
+                    label-for="form-time_spend-input">
+          <b-form-input id="form-time_spend-input"
+                        type="text"
+                        v-model="editForm.time_spend"
+                        required
+                        placeholder="How long does this take?">
+          </b-form-input>
+        </b-form-group>
       <b-button-group>
         <b-button type="submit" variant="primary">Update</b-button>
         <b-button type="reset" variant="danger">Cancel</b-button>
@@ -161,12 +184,14 @@ export default {
         title: '',
         assignee: '',
         done: false,
+        time_spend: '',
       },
       editForm: {
         id: '',
         title: '',
         assignee: '',
         done: false,
+        time_spend: '',
       },
     };
   },
@@ -205,10 +230,13 @@ export default {
       this.addTaskForm.title = '';
       this.addTaskForm.assignee = '';
       this.addTaskForm.done = false;
+      this.addTaskForm.time_spend = '';
+      //
       this.editForm.id = '';
       this.editForm.title = '';
       this.editForm.assignee = '';
       this.editForm.done = false;
+      this.editForm.time_spend = '';
     },
     onSubmit(evt) {
       evt.preventDefault();
@@ -219,6 +247,7 @@ export default {
         title: this.addTaskForm.title,
         assignee: this.addTaskForm.assignee,
         done, // property shorthand
+        time_spend: this.addTaskForm.time_spend,
       };
       this.addTask(payload);
       this.initForm();
@@ -240,6 +269,7 @@ export default {
         title: this.editForm.title,
         assignee: this.editForm.assignee,
         done,
+        time_spend: this.editForm.time_spend,
       };
       this.updateTask(payload, this.editForm.id);
     },

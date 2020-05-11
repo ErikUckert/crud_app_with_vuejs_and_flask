@@ -20,28 +20,28 @@ INBOX = [
         'title': 'Task 0',
         'assignee': 'Jack Kerouac',
         'done': False,
-        'time': 0
+        'time_spend': 0
     },
     {
         'id': uuid.uuid4().hex,
         'title': 'Task 1',
         'assignee': 'Max Power',
         'done': False,
-        'time': 0
+        'time_spend': 0
     },
     {
         'id': uuid.uuid4().hex,
         'title': 'Task 2',
         'assignee': 'Jonny Cool',
         'done': True,
-        'time': 0
+        'time_spend': 0
     },
     {
         'id': uuid.uuid4().hex,
         'title': 'Task 3',
         'assignee': 'Lucy Cat',
         'done': True,
-        'time': 0
+        'time_spend': 0
     }
 ]
 
@@ -83,7 +83,8 @@ def all_tasks():
             'id': uuid.uuid4().hex,
             'title': post_data.get('title'),
             'assignee': post_data.get('assignee'),
-            'done': post_data.get('done')
+            'done': post_data.get('done'),
+            'time_spend': post_data.get('time_spend')
         })
         response_object['msg'] = 'Task added!'
         
@@ -103,7 +104,8 @@ def single_task(task_id):
             'id': uuid.uuid4().hex,
             'title': post_data.get('title'),
             'assignee': post_data.get('assignee'),
-            'done': post_data.get('done')
+            'done': post_data.get('done'),
+            'time_spend': post_data.get('time_spend')
         })
         response_object['message'] = 'Task updated!'
     return jsonify(response_object)
