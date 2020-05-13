@@ -46,6 +46,15 @@
     {{task.assignee}}
     <br>
     {{task.title}}
+    <br>
+    <p>{{task.time_spend}} hours until now</p>
+    <button
+        type="button"
+        class="btn btn-warning btn-sm"
+        v-b-modal.task-update-modal
+        @click="editTask(task)">
+      Update
+    </button>
     </div>
       </draggable>
     </div>
@@ -63,6 +72,15 @@
     {{task.assignee}}
     <br>
     {{task.title}}
+    <br>
+    <p>{{task.time_spend}} hours until now</p>
+    <button
+        type="button"
+        class="btn btn-warning btn-sm"
+        v-b-modal.task-update-modal
+        @click="editTask(task)">
+      Update
+    </button>
     </div>
       </draggable>
     </div>
@@ -116,46 +134,46 @@
             title="Update"
             hide-footer>
     <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
-    <b-form-group id="form-title-edit-group"
-                  label="Title:"
-                  label-for="form-title-edit-input">
-        <b-form-input id="form-title-edit-input"
-                      type="text"
-                      v-model="editForm.title"
-                      required
-                      placeholder="Enter title">
-        </b-form-input>
-      </b-form-group>
-      <b-form-group id="form-assignee-edit-group"
-                    label="Assignee:"
-                    label-for="form-author-edit-input">
-          <b-form-input id="form-assignee-edit-input"
+      <b-form-group id="form-title-edit-group"
+                    label="Title:"
+                    label-for="form-title-edit-input">
+          <b-form-input id="form-title-edit-input"
                         type="text"
-                        v-model="editForm.assignee"
+                        v-model="editForm.title"
                         required
-                        placeholder="Enter assignee">
+                        placeholder="Enter title">
           </b-form-input>
-        </b-form-group>
-      <b-form-group id="form-done-edit-group">
-          <b-form-checkbox v-model="editForm.done" id="form-checks"
-                          value=true>Done?</b-form-checkbox>
       </b-form-group>
-      <b-form-group id="form-time_spend-group"
-                    label="Time spend:"
-                    label-for="form-time_spend-input">
-          <b-form-input id="form-time_spend-input"
-                        type="text"
-                        v-model="editForm.time_spend"
-                        required
-                        placeholder="How long does this take?">
-          </b-form-input>
+        <b-form-group id="form-assignee-edit-group"
+                      label="Assignee:"
+                      label-for="form-author-edit-input">
+            <b-form-input id="form-assignee-edit-input"
+                          type="text"
+                          v-model="editForm.assignee"
+                          required
+                          placeholder="Enter assignee">
+            </b-form-input>
+          </b-form-group>
+        <b-form-group id="form-done-edit-group">
+            <b-form-checkbox v-model="editForm.done" id="form-checks"
+                            value=true>Done?</b-form-checkbox>
         </b-form-group>
-      <b-button-group>
-        <b-button type="submit" variant="primary">Update</b-button>
-        <b-button type="reset" variant="danger">Cancel</b-button>
-      </b-button-group>
-    </b-form>
-  </b-modal>
+        <b-form-group id="form-time_spend-group"
+                      label="Time spend:"
+                      label-for="form-time_spend-input">
+            <b-form-input id="form-time_spend-input"
+                          type="text"
+                          v-model="editForm.time_spend"
+                          required
+                          placeholder="How long does this take?">
+            </b-form-input>
+          </b-form-group>
+        <b-button-group>
+          <b-button type="submit" variant="primary">Update</b-button>
+          <b-button type="reset" variant="danger">Cancel</b-button>
+        </b-button-group>
+      </b-form>
+    </b-modal>
 
   </div>
   </div>
@@ -270,6 +288,9 @@ export default {
         assignee: this.editForm.assignee,
         done,
         time_spend: this.editForm.time_spend,
+        // this is for adding the updated items to the correct list
+        item_id: this.editForm.id,
+        lists: [this.INBOX, this.INPROGRESS, this.DONE],
       };
       this.updateTask(payload, this.editForm.id);
     },

@@ -62,20 +62,11 @@ def remove_task(task_id):
 def ping_pong():
     return jsonify('pong!')
 
-# # main route
-# @app.route('/tasks', methods=['GET'])
-# def main_route():
-#     return jsonify({
-#         'status': 'success',
-#         'inbox': INBOX,
-#         'inprogress': INPROGRESS,
-#         'done': DONE,
-#         'msg': 'Task added!'
-#     })
-
 # get / post route
 @app.route('/tasks', methods=['GET', 'POST'])
 def all_tasks():
+    global INBOX, INPROGRESS, DONE
+
     response_object = {'status': 'success'}
     if request.method == 'POST':
         post_data = request.get_json()
@@ -86,27 +77,39 @@ def all_tasks():
             'done': post_data.get('done'),
             'time_spend': post_data.get('time_spend')
         })
-        response_object['msg'] = 'Task added!'
         
     else:
         response_object['INBOX'] = INBOX
         response_object['INPROGRESS'] = INPROGRESS
         response_object['DONE'] = DONE
+
     return jsonify(response_object)
 
 @app.route('/tasks/<task_id>', methods=['PUT'])
 def single_task(task_id):
+    global INBOX, INPROGRESS, DONE
+
     response_object = {'status': 'success'}
     if request.method == 'PUT':
         post_data = request.get_json()
-        remove_task(task_id)
-        INBOX.append({
-            'id': uuid.uuid4().hex,
-            'title': post_data.get('title'),
-            'assignee': post_data.get('assignee'),
-            'done': post_data.get('done'),
-            'time_spend': post_data.get('time_spend')
-        })
+        #remove_task(task_id)
+
+        # check on which list the actual updated item is
+        for single_list in post_data.get('lists'):
+
+            for item in single_list:
+
+                if post_data.get('item_id') == item['id']:
+
+                    item['title'] = post_data.get('title')
+                    item['assignee'] = post_data.get('assignee')
+                    item['done']= post_data.get('done')
+                    item['time_spend']=post_data.get('time_spend')
+
+        INBOX = post_data.get('lists')[0]
+        INPROGRESS = post_data.get('lists')[1]
+        DONE = post_data.get('lists')[2]
+
         response_object['message'] = 'Task updated!'
     return jsonify(response_object)
 
