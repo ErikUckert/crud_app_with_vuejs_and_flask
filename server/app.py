@@ -77,6 +77,7 @@ def all_tasks():
             'done': post_data.get('done'),
             'time_spend': post_data.get('time_spend')
         })
+        response_object['message'] = 'Task added!'
         
     else:
         response_object['INBOX'] = INBOX
@@ -85,7 +86,7 @@ def all_tasks():
 
     return jsonify(response_object)
 
-@app.route('/tasks/<task_id>', methods=['PUT'])
+@app.route('/tasks/<task_id>', methods=['PUT', 'DELETE'])
 def single_task(task_id):
     global INBOX, INPROGRESS, DONE
 
@@ -110,7 +111,11 @@ def single_task(task_id):
         INPROGRESS = post_data.get('lists')[1]
         DONE = post_data.get('lists')[2]
 
-        response_object['message'] = 'Task updated!'
+        # response_object['message'] = 'Task updated!'
+        
+    if request.method == 'DELETE':
+        remove_task(task_id)
+        # response_object['message'] = 'Task removed!'
     return jsonify(response_object)
 
 if __name__ == '__main__':

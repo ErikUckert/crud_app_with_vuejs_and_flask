@@ -29,6 +29,12 @@
         @click="editTask(task)">
       Update
     </button>
+    <button
+        type="button"
+        class="btn btn-danger btn-sm"
+        @click="onDeleteTask(task)">
+    Delete
+</button>
     </div>
       </draggable>
     </div>
@@ -221,8 +227,6 @@ export default {
           this.INBOX = res.data.INBOX;
           this.INPROGRESS = res.data.INPROGRESS;
           this.DONE = res.data.DONE;
-          // this.msg = res.data.msg;
-          // this.msg = 'Message';
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -234,9 +238,8 @@ export default {
       axios.post(path, payload)
         .then((res) => {
           this.getTasks();
-          // this.msg = 'Message';
           this.showMessage = true;
-          this.msg = res.data.msg;
+          this.msg = res.data.message;
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -313,6 +316,23 @@ export default {
       this.$refs.editTaskModal.hide();
       this.initForm();
       this.getTasks();
+    },
+    removeTask(taskID) {
+      const path = `http://localhost:5000/tasks/${taskID}`;
+      axios.delete(path)
+        .then(() => {
+          this.getTasks();
+          this.showMessage = true;
+          this.msg = 'Task removed!';
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+          this.getTasks();
+        });
+    },
+    onDeleteTask(task) {
+      this.removeTask(task.id);
     },
   },
   created() {
