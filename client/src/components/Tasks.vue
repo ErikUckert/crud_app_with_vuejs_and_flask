@@ -7,6 +7,7 @@
     justify-center items-center md:items-start md:flex-row">
 
     <!-- three column kanban board -->
+    <!-- INBOX LIST-->
     <div class="w-full max-w-md text-center px-3">
       <p class="mb-2 text-gray-700 font-semibold font-sans tracking-wide">Inbox</p>
       <draggable
@@ -14,7 +15,8 @@
         ghost-class="moving-card"
         :list="INBOX"
         :animation="200"
-        @end ="onSubmitDrag">
+        @end ="onSubmitDrag"
+        >
         <div v-for="task in INBOX"
         :key="task.id"
       class="p-4 mb-3 flex justify-between items-center bg-white shadow rounded-lg cursor-move">
@@ -33,7 +35,7 @@
     </div>
       </draggable>
     </div>
-
+    <!-- INPROGRESS LIST-->
     <div class="w-full max-w-md md:ml-6 text-center px-3">
       <p class="mb-2 text-gray-700 font-semibold font-sans tracking-wide">In Progress</p>
       <draggable
@@ -41,7 +43,8 @@
         ghost-class="moving-card"
         :list="INPROGRESS"
         :animation="200"
-        @end ="onSubmitDrag">
+        @end ="onSubmitDrag"
+        >
         <div v-for="task in INPROGRESS"
         :key="task.id"
       class="p-4 mb-3 flex justify-between items-center bg-white shadow rounded-lg cursor-move">
@@ -60,7 +63,7 @@
     </div>
       </draggable>
     </div>
-
+    <!-- DONE LIST-->
     <div class="w-full max-w-md md:ml-6 text-center px-3">
       <p class="mb-2 text-gray-700 font-semibold font-sans tracking-wide">Done</p>
       <draggable
@@ -68,7 +71,8 @@
         ghost-class="moving-card"
         :list="DONE"
         :animation="200"
-        @end ="onSubmitDrag">
+        @end ="onSubmitDrag"
+        >
         <div v-for="task in DONE"
         :key="task.id"
       class="p-4 mb-3 flex justify-between items-center bg-white shadow rounded-lg cursor-move">
