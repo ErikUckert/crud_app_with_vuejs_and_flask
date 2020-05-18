@@ -13,7 +13,8 @@
         group="all-tasks"
         ghost-class="moving-card"
         :list="INBOX"
-        :animation="200">
+        :animation="200"
+        @end ="onSubmitDrag">
         <div v-for="task in INBOX"
         :key="task.id"
       class="p-4 mb-3 flex justify-between items-center bg-white shadow rounded-lg cursor-move">
@@ -29,12 +30,6 @@
         @click="editTask(task)">
       Update
     </button>
-    <button
-        type="button"
-        class="btn btn-danger btn-sm"
-        @click="onDeleteTask(task)">
-    Delete
-</button>
     </div>
       </draggable>
     </div>
@@ -45,7 +40,8 @@
         group="all-tasks"
         ghost-class="moving-card"
         :list="INPROGRESS"
-        :animation="200">
+        :animation="200"
+        @end ="onSubmitDrag">
         <div v-for="task in INPROGRESS"
         :key="task.id"
       class="p-4 mb-3 flex justify-between items-center bg-white shadow rounded-lg cursor-move">
@@ -71,7 +67,8 @@
         group="all-tasks"
         ghost-class="moving-card"
         :list="DONE"
-        :animation="200">
+        :animation="200"
+        @end ="onSubmitDrag">
         <div v-for="task in DONE"
         :key="task.id"
       class="p-4 mb-3 flex justify-between items-center bg-white shadow rounded-lg cursor-move">
@@ -86,6 +83,12 @@
         v-b-modal.task-update-modal
         @click="editTask(task)">
       Update
+    </button>
+    <button
+        type="button"
+        class="btn btn-danger btn-sm"
+        @click="onDeleteTask(task)">
+    Delete
     </button>
     </div>
       </draggable>
@@ -296,6 +299,18 @@ export default {
         lists: [this.INBOX, this.INPROGRESS, this.DONE],
       };
       this.updateTask(payload, this.editForm.id);
+    },
+    onSubmitDrag() {
+      const path = 'http://localhost:5000/tasks';
+      const payload = {
+        lists: [this.INBOX, this.INPROGRESS, this.DONE],
+      };
+      axios.put(path, payload)
+        .then(() => {
+          this.getTasks();
+          this.showMessage = true;
+          this.msg = 'Task updated!';
+        });
     },
     updateTask(payload, taskID) {
       const path = `http://localhost:5000/tasks/${taskID}`;

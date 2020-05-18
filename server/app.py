@@ -51,9 +51,9 @@ DONE = []
 ## Helper Scripts
 
 def remove_task(task_id):
-    for task in INBOX:
+    for task in DONE:
         if task['id'] == task_id:
-            INBOX.remove(task)
+            DONE.remove(task)
             return True
     return False
 
@@ -63,7 +63,7 @@ def ping_pong():
     return jsonify('pong!')
 
 # get / post route
-@app.route('/tasks', methods=['GET', 'POST'])
+@app.route('/tasks', methods=['GET', 'POST', 'PUT'])
 def all_tasks():
     global INBOX, INPROGRESS, DONE
 
@@ -78,7 +78,15 @@ def all_tasks():
             'time_spend': post_data.get('time_spend')
         })
         response_object['message'] = 'Task added!'
-        
+    
+    # integration of PUT method here is for putting changes back
+    # when dragging items in the lists
+    if request.method == 'PUT':
+        post_data = request.get_json()
+
+        INBOX = post_data.get('lists')[0]
+        INPROGRESS = post_data.get('lists')[1]
+        DONE = post_data.get('lists')[2]  
     else:
         response_object['INBOX'] = INBOX
         response_object['INPROGRESS'] = INPROGRESS
